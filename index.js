@@ -35,12 +35,49 @@ const MENTIONS = { parse: ['everyone', 'roles', 'users'] };
 // temp storage so the spam button remembers your text
 const spamCache = new Map();
 
+// ---------------- /help ----------------
+const HELP_EMBED = new EmbedBuilder()
+  .setColor(0x5865F2)
+  .setTitle('Commands')
+  .setDescription('Here is everything this bot can do:')
+  .addFields(
+    {
+      name: '/raid',
+      value: 'Posts the big ﷽ banner a bunch of times to raid a server.',
+    },
+    {
+      name: '/spam <message>',
+      value: 'Repeats your message multiple times. You type the text once, hit the button, and it fires.',
+    },
+    {
+      name: '/blame <victim>',
+      value: 'Blames someone for the raid and pings them.',
+    },
+    {
+      name: '/ipgrab <amount>',
+      value: 'Drops a fake Discord Nitro gift. Pick how many times (1-5) and hit **send**.',
+    },
+    {
+      name: '/help',
+      value: 'Shows this list.',
+    },
+  )
+  .setFooter({ text: 'Made by Kxrzt' });
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once(Events.ClientReady, c => console.log(`Online as ${c.user.tag}`));
 
 client.on(Events.InteractionCreate, async interaction => {
   try {
+    // ---------------- /help ----------------
+    if (interaction.isChatInputCommand() && interaction.commandName === 'help') {
+      return interaction.reply({
+        embeds: [HELP_EMBED],
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
     // ---------------- /raid ----------------
     if (interaction.isChatInputCommand() && interaction.commandName === 'raid') {
       const row = new ActionRowBuilder().addComponents(
