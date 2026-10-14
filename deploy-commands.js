@@ -53,6 +53,12 @@ const commands = [
         .setMaxValue(5))
     .setIntegrationTypes(...integrationTypes)
     .setContexts(...contexts),
+
+  new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('List all commands and what they do')
+    .setIntegrationTypes(...integrationTypes)
+    .setContexts(...contexts),
 ].map(c => c.toJSON());
 
 const appId = process.env.CLIENT_ID;
