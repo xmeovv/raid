@@ -94,10 +94,26 @@ client.on(Events.InteractionCreate, async interaction => {
     // ---------------- /blame ----------------
     if (interaction.isChatInputCommand() && interaction.commandName === 'blame') {
       const victim = interaction.options.getUser('victim');
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`blame:${victim.id}`)
+          .setLabel('blame')
+          .setStyle(ButtonStyle.Danger)
+      );
       return interaction.reply({
-        content: `<@${victim.id}> Your Raid has been succesful!`,
+        content: `<@${victim.id}>`,
+        components: [row],
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    if (interaction.isButton() && interaction.customId.startsWith('blame:')) {
+      const victimId = interaction.customId.slice(6);
+      await interaction.reply({
+        content: `<@${victimId}> Your Raid has been succesful!`,
         allowedMentions: MENTIONS,
       });
+      return;
     }
   } catch (err) {
     console.error(err);
