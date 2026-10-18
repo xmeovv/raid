@@ -18,7 +18,13 @@ const contexts = [
 const commands = [
   new SlashCommandBuilder()
     .setName('raid')
-    .setDescription('Start a raid')
+    .setDescription('short raid')
+    .setIntegrationTypes(...integrationTypes)
+    .setContexts(...contexts),
+
+  new SlashCommandBuilder()
+    .setName('raid2')
+    .setDescription('long arabic symbol raid')
     .setIntegrationTypes(...integrationTypes)
     .setContexts(...contexts),
 
